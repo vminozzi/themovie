@@ -10,18 +10,34 @@ import UIKit
 
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LoadContent, GenreCellDelegate {
     
+    
+    // MARK: - Attributes
     lazy var viewModel: MoviesDelegate = MoviesViewModel(delegate: self)
     
+    
+    // MARK: - IBOutlet
     @IBOutlet weak var tableView: UITableView!
     
     
+    // MARK: - Instace methods
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.loadContent()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let listViewcontroller = segue.destination as? ListMoviesViewController, let dto = sender as? GenreDTO {
+            listViewcontroller.fill(with: dto)
+        }
     }
     
     
@@ -49,12 +65,12 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = GenreTableViewCell.createCell(tableView: tableView, indexPath: indexPath) as GenreTableViewCell
         cell.delegate = self
-        cell.fill(with: viewModel.getGenreDTO(at: indexPath.section))
+        cell.fill(with: viewModel.getGenreDTO(at: indexPath.section), at: indexPath.section)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 270.0
+        return 311.0
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -63,7 +79,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     
     // MARK: - GenreCellDelegate
-    func goToMovies(from genreId: Int) {
-        // TODO: go to movies list
+    func goToMovies(from genreId: Int, at row: Int) {
+        performSegue(withIdentifier: "goToList", sender: viewModel.getGenreDTO(at: row))
     }
 }

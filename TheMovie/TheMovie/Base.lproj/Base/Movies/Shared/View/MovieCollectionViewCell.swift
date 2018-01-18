@@ -30,8 +30,9 @@ class MovieCollectionViewCell: UICollectionViewCell {
         guard let data = dto else {
             return
         }
-        
+        name.text = data.name
         identifier = data.identifier
+        setImage(with: data.image)
     }
     
     func setImage(with image: UIImage?) {

@@ -9,13 +9,14 @@
 import UIKit
 
 protocol GenreCellDelegate: class {
-    func goToMovies(from genreId: Int)
+    func goToMovies(from genreId: Int, at row: Int)
 }
 
-class GenreTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, GenreCellLoadContent {
+class GenreTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, SharedLoadContent {
     
-    private lazy var cellViewModel: GenreCellViewModelDelegate = GenreTableViewModelCell(delegate: self)
+    private lazy var cellViewModel: GenreViewModelDelegate = GenreTableViewModelCell(delegate: self)
     weak var delegate: GenreCellDelegate?
+    private var row = 0
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -24,15 +25,16 @@ class GenreTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollectio
         super.awakeFromNib()
     }
     
-    func fill(with dto: GenreDTO?) {
+    func fill(with dto: GenreDTO?, at row: Int) {
         guard let data = dto else {
             return
         }
-        cellViewModel.setMovies(array: data.movies, genreId: data.id)
+        self.row = row
+        cellViewModel.sharedViewModel.setGenreDTO(with: data)
     }
     
     @IBAction func goToGenre() {
-        
+        delegate?.goToMovies(from: cellViewModel.sharedViewModel.genreId, at: row)
     }
     
     
@@ -47,12 +49,18 @@ class GenreTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollectio
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = MovieCollectionViewCell.createCell(collectionView: collectionView, indexPath: indexPath) as MovieCollectionViewCell
-        cell.fill(with: cellViewModel.getMovieDTO(at: indexPath.row))
+        cell.fill(with: cellViewModel.sharedViewModel.getMovieDTO(at: indexPath.row))
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let movieCell = cell as? MovieCollectionViewCell {
+            movieCell.fill(with: cellViewModel.sharedViewModel.getMovieDTO(at: indexPath.row))
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return cellViewModel.sizeForItems()
+        return cellViewModel.sizeForItems(with: contentView.frame.size.width, height: contentView.frame.size.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -60,20 +68,20 @@ class GenreTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollectio
     }
     
     
-    // MARK: - GenreCellLoadContent
+    // MARK: - MovieByGenreLoadContent
     func didLoadImage(identifier: String) {
         DispatchQueue.main.async {
             for cell in self.collectionView.visibleCells {
                 if let movieCell = cell as? MovieCollectionViewCell, movieCell.identifier == identifier {
-                    movieCell.setImage(with: self.cellViewModel.imageFromCache(identifier: identifier))
+                    movieCell.setImage(with: self.cellViewModel.sharedViewModel.imageFromCache(identifier: identifier))
                 }
             }
         }
     }
     
-    func didLoadContent() {
+    func didLoadContent(error: String?) {
         DispatchQueue.main.async {
-            self.collectionView.reloadData()
+            self.collectionView?.reloadData()
         }
     }
 }

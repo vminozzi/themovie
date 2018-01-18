@@ -26,10 +26,13 @@ protocol MoviesDelegate: class {
     func getTitle(at section: Int) -> String
 }
 
+typealias GenreMovie = (genre: Int, movies: [Movie]?)
+
 class MoviesViewModel: MoviesDelegate {
     
     private var genres: [Genre]?
     private var movies: [Movie]?
+    private var genreMovies = [GenreMovie]()
     private weak var loadContentDelegate: LoadContent?
     
     init(delegate: LoadContent?) {
@@ -62,8 +65,8 @@ class MoviesViewModel: MoviesDelegate {
     }
     
     private func getMovies(from id: Int) -> [Movie] {
-        let filtered = movies?.filter { $0.genre_ids?.contains(id) == true }
-        guard let movies = filtered else {
+        let moviesSection = genreMovies.filter { $0.genre == id }.first
+        guard let movies = moviesSection?.movies else {
             return [Movie]()
         }
         return movies
@@ -71,7 +74,7 @@ class MoviesViewModel: MoviesDelegate {
     
     private func getMovies(with gerne: Int) {
         MoviesRequest(page: 1, genre: gerne).request(completion: { movies, error in
-            movies?.results?.forEach { self.movies?.append($0) }
+            self.genreMovies.append(GenreMovie(genre: gerne, movies: movies?.results))
             self.loadContentDelegate?.didLoadContent(error: error?.message)
         })
     }
