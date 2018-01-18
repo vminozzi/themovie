@@ -31,7 +31,6 @@ typealias GenreMovie = (genre: Int, movies: [Movie]?)
 class MoviesViewModel: MoviesDelegate {
     
     private var genres: [Genre]?
-    private var movies: [Movie]?
     private var genreMovies = [GenreMovie]()
     private weak var loadContentDelegate: LoadContent?
     
@@ -43,7 +42,6 @@ class MoviesViewModel: MoviesDelegate {
         GenreRequest().request { result, error in
             self.genres = result?.genres
             self.loadContentDelegate?.didLoadContent(error: error?.message)
-            self.movies = [Movie]()
             self.genres?.forEach { self.getMovies(with: $0.id) }
         }
     }

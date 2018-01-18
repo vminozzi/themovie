@@ -12,6 +12,7 @@ import UIKit
 protocol SharedLoadContent: class {
     func didLoadImage(identifier: String)
     func didLoadContent(error: String?)
+    func didShowMovieDetail(with dto: DetailMovieDTO, error: String?)
 }
 
 protocol SharedViewModelDelegate: class {
@@ -24,6 +25,7 @@ protocol SharedViewModelDelegate: class {
     func getMovieDTO(at row: Int) -> MovieDTO
     func getImage(row: Int) -> UIImage?
     func imageFromCache(identifier: String) -> UIImage?
+    func movieDetail(at row: Int)
 }
 
 
@@ -35,6 +37,7 @@ class SharedViewModel: SharedViewModelDelegate {
     private var cache = NSCache<NSString, UIImage>()
     weak var loadContentDelegate: SharedLoadContent?
     
+    
     init() { }
     
     init(sharedDelegate: SharedLoadContent) {
@@ -45,6 +48,7 @@ class SharedViewModel: SharedViewModelDelegate {
         movies = dto.movies
         title = dto.name
         genreId = dto.id
+        loadContentDelegate?.didLoadContent(error: nil)
     }
     
     func getMovieDTO(at row: Int) -> MovieDTO {
@@ -79,5 +83,18 @@ class SharedViewModel: SharedViewModelDelegate {
     
     func imageFromCache(identifier: String) -> UIImage? {
         return cache.object(forKey: NSString(string: identifier))
+    }
+    
+    func movieDetail(at row: Int) {
+        DetailRequest(movie: movies[row].id ?? 0).request { result, error in
+            
+            let detailDTO = DetailMovieDTO(image: result?.detail?.backdrop_path ?? "",
+                                           overview: result?.detail?.overview ?? "",
+                                           title: result?.detail?.title ?? "",
+                                           avarage: result?.detail?.vote_average ?? 0.0,
+                                           avaregeCount: result?.detail?.vote_count ?? 0)
+            
+            self.loadContentDelegate?.didShowMovieDetail(with: detailDTO, error: error?.message)
+        }
     }
 }

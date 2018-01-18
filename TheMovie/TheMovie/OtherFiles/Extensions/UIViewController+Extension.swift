@@ -13,7 +13,7 @@ extension UIViewController {
     
     func showLoader() {
         DispatchQueue.main.async {
-            let loader = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+            let loader = UIActivityIndicatorView(activityIndicatorStyle: .white)
             loader.center = UIApplication.shared.keyWindow?.center ?? CGPoint()
             loader.startAnimating()
             UIApplication.shared.keyWindow?.addSubview(loader)

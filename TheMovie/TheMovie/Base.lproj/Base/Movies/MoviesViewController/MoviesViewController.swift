@@ -35,8 +35,14 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let listViewcontroller = segue.destination as? ListMoviesViewController, let dto = sender as? GenreDTO {
-            listViewcontroller.fill(with: dto)
+        if segue.identifier == "goToDetail" {
+            if let detailViewcontroller = segue.destination as? DetailMovieViewController, let dto = sender as? DetailMovieDTO {
+                detailViewcontroller.fill(with: dto)
+            }
+        } else if segue.identifier == "goToList" {
+            if let listViewcontroller = segue.destination as? ListMoviesViewController, let dto = sender as? GenreDTO {
+                listViewcontroller.fill(with: dto)
+            }
         }
     }
     
@@ -81,5 +87,20 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - GenreCellDelegate
     func goToMovies(from genreId: Int, at row: Int) {
         performSegue(withIdentifier: "goToList", sender: viewModel.getGenreDTO(at: row))
+    }
+    
+    func error(message: String) {
+        showDefaultAlert(message: "\(message). Tentar novamente?") { alertAction in
+            self.viewModel.loadContent()
+        }
+    }
+    
+    func goToMovieDetail(dto: DetailMovieDTO) {
+        dismissLoader()
+        performSegue(withIdentifier: "goToDetail", sender: dto)
+    }
+    
+    func didShowLoader() {
+        showLoader()
     }
 }

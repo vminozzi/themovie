@@ -10,6 +10,9 @@ import UIKit
 
 protocol GenreCellDelegate: class {
     func goToMovies(from genreId: Int, at row: Int)
+    func goToMovieDetail(dto: DetailMovieDTO)
+    func error(message: String)
+    func didShowLoader()
 }
 
 class GenreTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, SharedLoadContent {
@@ -59,16 +62,21 @@ class GenreTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout, U
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.didShowLoader()
+        cellViewModel.sharedViewModel.movieDetail(at: indexPath.row)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return cellViewModel.sizeForItems(with: contentView.frame.size.width, height: contentView.frame.size.height)
+        return cellViewModel.sizeForItems()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10.0
+        return 8.0
     }
     
     
-    // MARK: - MovieByGenreLoadContent
+    // MARK: - SharedLoadContent
     func didLoadImage(identifier: String) {
         DispatchQueue.main.async {
             for cell in self.collectionView.visibleCells {
@@ -80,8 +88,15 @@ class GenreTableViewCell: UITableViewCell, UICollectionViewDelegateFlowLayout, U
     }
     
     func didLoadContent(error: String?) {
+        if let message = error {
+            delegate?.error(message: message)
+        }
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
         }
+    }
+    
+    func didShowMovieDetail(with dto: DetailMovieDTO, error: String?) {
+        delegate?.goToMovieDetail(dto: dto)
     }
 }

@@ -48,6 +48,6 @@ class ListMoviesViewModel: ListMoviesViewModelDelegate {
     }
     
     func sizeForItems(with width: CGFloat, height: CGFloat) -> CGSize {
-        return CGSize(width: ((width / 2) - 24), height: ((height / 2) - 24))
+        return CGSize(width: ((width / 2) - 12), height: ((height / 2) - 12))
     }
 }

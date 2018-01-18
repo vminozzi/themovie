@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UJP-Vm-2zY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UJP-Vm-2zY">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -137,6 +137,7 @@
                     <connections>
                         <outlet property="tableView" destination="AO0-mQ-j9T" id="VOO-4r-X4w"/>
                         <segue destination="dXB-fn-ESu" kind="show" identifier="goToList" id="BKJ-6S-6at"/>
+                        <segue destination="MBc-g4-ly0" kind="show" identifier="goToDetail" id="N9o-W8-466"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -151,7 +152,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Gtt-Y7-ezb">
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="8" id="Gtt-Y7-ezb">
                             <size key="itemSize" width="50" height="50"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -202,10 +203,21 @@
                             <outlet property="delegate" destination="dXB-fn-ESu" id="04A-2L-5Eq"/>
                         </connections>
                     </collectionView>
+                    <connections>
+                        <segue destination="MBc-g4-ly0" kind="show" identifier="goToDetail" id="szz-0x-AJG"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QKP-JA-Gnz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1198" y="32"/>
+        </scene>
+        <!--DetailMovie-->
+        <scene sceneID="r9o-Y7-fKr">
+            <objects>
+                <viewControllerPlaceholder storyboardName="DetailMovie" id="MBc-g4-ly0" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Woh-JG-SWp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="781" y="596"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YaF-Ml-05b">
@@ -237,4 +249,7 @@
     <resources>
         <image name="placeholder-icon" width="85" height="85"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="N9o-W8-466"/>
+    </inferredMetricsTieBreakers>
 </document>

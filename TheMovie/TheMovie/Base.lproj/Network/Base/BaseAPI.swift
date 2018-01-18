@@ -19,7 +19,7 @@ protocol Requestable: class {
 
 struct BaseAPI {
     
-    static var imageURL = "https://image.tmdb.org/t/p/w185"
+    static var imageURL = "https://image.tmdb.org/t/p/w320"
     static var key = "92780cb6b9da5c0a7fc471d31864d2b1"
     static var language = "pt-BR"
     
@@ -31,6 +31,10 @@ struct BaseAPI {
     
     var genres: String {
         return base + "genre/movie/list"
+    }
+    
+    var movie: String {
+        return base + "movie/"
     }
 }
 

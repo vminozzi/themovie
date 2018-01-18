@@ -30,6 +30,14 @@ class ListMoviesViewController: UICollectionViewController, UICollectionViewDele
         super.didReceiveMemoryWarning()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToDetail" {
+            if let detailViewcontroller = segue.destination as? DetailMovieViewController, let dto = sender as? DetailMovieDTO {
+                detailViewcontroller.fill(with: dto)
+            }
+        }
+    }
+    
     private func populate() {
         viewModel.sharedViewModel.setGenreDTO(with: genreDTO)
         self.title = viewModel.sharedViewModel.title
@@ -40,7 +48,7 @@ class ListMoviesViewController: UICollectionViewController, UICollectionViewDele
     }
     
     
-    // MARK: - MovieByGenreLoadContent
+    // MARK: - SharedLoadContent
     func didLoadContent(error: String?) {
         dismissLoader()
         if let errorMessage = error {
@@ -63,6 +71,10 @@ class ListMoviesViewController: UICollectionViewController, UICollectionViewDele
                 }
             }
         }
+    }
+    
+    func didShowMovieDetail(with dto: DetailMovieDTO, error: String?) {
+        performSegue(withIdentifier: "goToDetail", sender: dto)
     }
 
     
@@ -90,6 +102,10 @@ class ListMoviesViewController: UICollectionViewController, UICollectionViewDele
         if let movieCell = cell as? MovieCollectionViewCell {
             movieCell.fill(with: viewModel.sharedViewModel.getMovieDTO(at: indexPath.row))
         }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.sharedViewModel.movieDetail(at: indexPath.row)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

@@ -29,10 +29,8 @@ class MoviesRequest: Requestable {
         }
         
         Alamofire.request(moviesURL, method: .get, parameters: parameters).validate().responseJSON { response in
-            
             let result = response.data <--> (MoviesResult.self, response.error)
             completion(result.model, result.error)
-            
             }.resume()
     }
 }
