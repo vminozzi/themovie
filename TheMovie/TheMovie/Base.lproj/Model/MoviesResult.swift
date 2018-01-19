@@ -10,6 +10,7 @@ import Foundation
 
 struct MoviesResult: Mappable {
     
+    var total_pages = 0
     var results: [Movie]?
     
     init?(data: Data) {
@@ -17,5 +18,6 @@ struct MoviesResult: Mappable {
             return nil
         }
         results = moviesDecoded.results
+        total_pages = moviesDecoded.total_pages
     }
 }

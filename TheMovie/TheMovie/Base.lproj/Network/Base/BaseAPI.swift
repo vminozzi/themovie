@@ -38,10 +38,7 @@ struct BaseAPI {
     }
 }
 
-precedencegroup ExponentiativePrecedence {
-    associativity: right
-    higherThan: MultiplicationPrecedence
-}
+precedencegroup ExponentiativePrecedence { }
 
 infix operator <--> :ExponentiativePrecedence
 
@@ -51,12 +48,8 @@ func <--> <T: Mappable>(data: Data?, handle: (type: T.Type, error: Error?)) -> (
         return (nil, CustomError(error: error))
     }
     
-    guard let data = data else {
+    guard let data = data, let model = T(data: data) else {
         return (nil, CustomError(error: handle.error))
-    }
-    
-    guard let model = T(data: data) else {
-        return (nil, CustomError())
     }
     
     return (model, nil)

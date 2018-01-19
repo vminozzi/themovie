@@ -30,9 +30,12 @@ typealias GenreMovie = (genre: Int, movies: [Movie]?)
 
 class MoviesViewModel: MoviesDelegate {
     
-    private var genres: [Genre]?
-    private var genreMovies = [GenreMovie]()
+    var genres: [Genre]?
+    var genreMovies = [GenreMovie]()
     private weak var loadContentDelegate: LoadContent?
+    
+    
+    init() { }
     
     init(delegate: LoadContent?) {
         loadContentDelegate = delegate
@@ -62,7 +65,7 @@ class MoviesViewModel: MoviesDelegate {
         return GenreDTO(id: genres?[row].id ?? 0, name: genres?[row].name ?? "", movies: getMovies(from: genres?[row].id ?? 0))
     }
     
-    private func getMovies(from id: Int) -> [Movie] {
+    func getMovies(from id: Int) -> [Movie] {
         let moviesSection = genreMovies.filter { $0.genre == id }.first
         guard let movies = moviesSection?.movies else {
             return [Movie]()

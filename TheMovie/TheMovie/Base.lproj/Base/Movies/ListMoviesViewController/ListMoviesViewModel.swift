@@ -23,7 +23,9 @@ class ListMoviesViewModel: ListMoviesViewModelDelegate {
     
     var sharedViewModel = SharedViewModel()
     private var page = 1
+    private var canLoadContent = true
     
+    init() { }
     
     init(delegate: SharedLoadContent) {
         sharedViewModel = SharedViewModel(sharedDelegate: delegate)
@@ -32,11 +34,14 @@ class ListMoviesViewModel: ListMoviesViewModelDelegate {
     
     // MARK: - MovieByGenreViewModelDelegate
     func loadContent() {
-        page += 1
-        MoviesRequest(page: page, genre: sharedViewModel.genreId).request(completion: { movies, error in
-            movies?.results?.forEach { self.sharedViewModel.movies.append($0) }
-            self.sharedViewModel.loadContentDelegate?.didLoadContent(error: error?.message)
-        })
+        if canLoadContent {
+            page += 1
+            MoviesRequest(page: page, genre: sharedViewModel.genreId).request(completion: { movies, error in
+                self.canLoadContent = movies?.total_pages != self.page
+                movies?.results?.forEach { self.sharedViewModel.movies.append($0) }
+                self.sharedViewModel.loadContentDelegate?.didLoadContent(error: error?.message)
+            })
+        }
     }
     
     func numberOfSections() -> Int {

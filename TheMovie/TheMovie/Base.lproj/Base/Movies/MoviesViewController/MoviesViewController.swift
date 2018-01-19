@@ -28,6 +28,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
+        tableView.isUserInteractionEnabled = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -101,6 +102,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func didShowLoader() {
+        tableView.isUserInteractionEnabled = false
         showLoader()
     }
 }
